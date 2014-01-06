@@ -1,6 +1,7 @@
 package game.values.sets;
 
 import game.values.MaskValue;
+import game.values.Masks;
 
 public class TestMasks extends Masks
 {

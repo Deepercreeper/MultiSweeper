@@ -1,6 +1,7 @@
 package game.values.sets;
 
 import game.values.TileValue;
+import game.values.Tiles;
 
 public class HexTiles extends Tiles
 {

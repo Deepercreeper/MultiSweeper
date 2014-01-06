@@ -1,7 +1,6 @@
-package game.values.sets;
+package game.values;
 
 import game.Sweeper;
-import game.values.TileValue;
 import log.Log;
 
 public abstract class Tiles

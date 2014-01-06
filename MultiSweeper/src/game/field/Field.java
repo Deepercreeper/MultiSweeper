@@ -2,9 +2,9 @@ package game.field;
 
 import game.util.Tile;
 import game.values.MaskValue;
+import game.values.Masks;
 import game.values.TileValue;
-import game.values.sets.Masks;
-import game.values.sets.Tiles;
+import game.values.Tiles;
 import java.util.HashSet;
 import log.Log;
 

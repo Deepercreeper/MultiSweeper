@@ -1,10 +1,10 @@
 package game.field;
 
 import game.util.Tile;
-import game.values.sets.Masks;
+import game.values.Masks;
+import game.values.Tiles;
 import game.values.sets.TestMasks;
 import game.values.sets.TestTiles;
-import game.values.sets.Tiles;
 import java.util.HashSet;
 
 public class TestField extends Field
