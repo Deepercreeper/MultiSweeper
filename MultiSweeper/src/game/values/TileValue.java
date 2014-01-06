@@ -1,17 +1,41 @@
 package game.values;
 
-public enum TileValue
+public class TileValue
 {
-	EMPTY(0, true);
+	private final byte	mId, mAddId;
 	
-	private final boolean	mIsEmpty;
+	private final boolean	mIsEmpty, mIsBomb;
 	
-	private final byte		mId;
+	/**
+	 * Creates a new tile representing the bomb.
+	 * 
+	 * @param aId
+	 *            the id for the bomb.
+	 */
+	public TileValue(int aId)
+	{
+		mId = (byte) aId;
+		mAddId = -1;
+		mIsEmpty = false;
+		mIsBomb = true;
+	}
 	
-	private TileValue(int aId, boolean aIsEmpty)
+	/**
+	 * Creates a new Tile that is the empty tile or a number tile.
+	 * 
+	 * @param aId
+	 *            the id for this tile.
+	 * @param aAddId
+	 *            the id for the next higher tile.
+	 * @param aIsEmpty
+	 *            whether this is the empty tile or not.
+	 */
+	public TileValue(int aId, int aAddId, boolean aIsEmpty)
 	{
 		mId = (byte) aId;
 		mIsEmpty = aIsEmpty;
+		mAddId = (byte) aAddId;
+		mIsBomb = false;
 	}
 	
 	public byte getId()
@@ -19,22 +43,18 @@ public enum TileValue
 		return mId;
 	}
 	
+	public byte getNextId()
+	{
+		return mAddId;
+	}
+	
 	public boolean isEmpty()
 	{
 		return mIsEmpty;
 	}
 	
-	private static TileValue[]	VALUES;
-	
-	public static void init()
+	public boolean isBomb()
 	{
-		VALUES = new TileValue[values().length];
-		for (TileValue value : values())
-			VALUES[value.mId] = value;
-	}
-	
-	public static TileValue get(byte aId)
-	{
-		return VALUES[aId];
+		return mIsBomb;
 	}
 }

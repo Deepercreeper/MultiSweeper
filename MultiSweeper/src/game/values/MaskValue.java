@@ -1,17 +1,15 @@
 package game.values;
 
-public enum MaskValue
+public class MaskValue
 {
-	EMPTY(0, true);
-	
-	private final boolean	mIsEmpty;
-	
 	private final byte		mId;
 	
-	private MaskValue(int aId, boolean aIsEmpty)
+	private final boolean	mIsOpen;
+	
+	public MaskValue(int aId, boolean aIsOpen)
 	{
 		mId = (byte) aId;
-		mIsEmpty = aIsEmpty;
+		mIsOpen = aIsOpen;
 	}
 	
 	public byte getId()
@@ -19,22 +17,8 @@ public enum MaskValue
 		return mId;
 	}
 	
-	public boolean isEmpty()
+	public boolean isOpen()
 	{
-		return mIsEmpty;
-	}
-	
-	private static MaskValue[]	VALUES;
-	
-	public static void init()
-	{
-		VALUES = new MaskValue[values().length];
-		for (MaskValue value : values())
-			VALUES[value.mId] = value;
-	}
-	
-	public static MaskValue get(byte aId)
-	{
-		return VALUES[aId];
+		return mIsOpen;
 	}
 }

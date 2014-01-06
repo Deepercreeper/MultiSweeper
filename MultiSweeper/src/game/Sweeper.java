@@ -7,6 +7,8 @@ import view.Viewer;
 
 public abstract class Sweeper
 {
+	private static Sweeper	SWEEPER;
+	
 	protected BufferedImage	mImage;
 	
 	protected int			mWindowWidth, mWindowHeight;
@@ -21,6 +23,7 @@ public abstract class Sweeper
 	{
 		mViewer = aViewer;
 		mField = createField();
+		SWEEPER = this;
 	}
 	
 	public void start()
@@ -78,5 +81,11 @@ public abstract class Sweeper
 			default :
 				return null;
 		}
+	}
+	
+	public static void forceStop()
+	{
+		if (SWEEPER != null) SWEEPER.stop();
+		else System.exit(0);
 	}
 }

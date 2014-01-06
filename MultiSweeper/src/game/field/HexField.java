@@ -1,8 +1,10 @@
 package game.field;
 
 import game.util.Tile;
-import game.values.MaskValue;
-import game.values.TileValue;
+import game.values.sets.HexMasks;
+import game.values.sets.HexTiles;
+import game.values.sets.Masks;
+import game.values.sets.Tiles;
 import java.util.HashSet;
 
 public class HexField extends Field
@@ -32,9 +34,14 @@ public class HexField extends Field
 	}
 	
 	@Override
-	public void init()
+	protected Masks createMasks()
 	{
-		MaskValue.init();
-		TileValue.init();
+		return new HexMasks();
+	}
+	
+	@Override
+	protected Tiles createTiles()
+	{
+		return new HexTiles();
 	}
 }
