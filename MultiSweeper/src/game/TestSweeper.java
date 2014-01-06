@@ -1,5 +1,7 @@
 package game;
 
+import game.field.Field;
+import game.field.TestField;
 import java.awt.Graphics;
 import view.Viewer;
 
@@ -45,5 +47,11 @@ public class TestSweeper extends Sweeper
 	public void key(int aKey, boolean aDown)
 	{
 		System.out.println("Key Pressed: " + aKey + " Down: " + aDown);
+	}
+	
+	@Override
+	protected Field createField()
+	{
+		return new TestField();
 	}
 }

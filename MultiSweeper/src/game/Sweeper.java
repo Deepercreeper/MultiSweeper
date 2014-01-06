@@ -1,5 +1,6 @@
 package game;
 
+import game.field.Field;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import view.Viewer;
@@ -12,11 +13,14 @@ public abstract class Sweeper
 	
 	private final Viewer	mViewer;
 	
+	protected final Field	mField;
+	
 	private boolean			mRunning;
 	
 	public Sweeper(Viewer aViewer)
 	{
 		mViewer = aViewer;
+		mField = createField();
 	}
 	
 	public void start()
@@ -35,14 +39,13 @@ public abstract class Sweeper
 				e.printStackTrace();
 			}
 		}
-		
+		mViewer.stopWindow();
 	}
 	
 	public void stop()
 	{
 		mRunning = false;
 		stopSweeper();
-		mViewer.stopWindow();
 	}
 	
 	protected abstract void stopSweeper();
@@ -56,6 +59,8 @@ public abstract class Sweeper
 	public abstract void mouseMove(int aX, int aY);
 	
 	public abstract void key(int aKey, boolean aDown);
+	
+	protected abstract Field createField();
 	
 	public void init(BufferedImage aImage)
 	{

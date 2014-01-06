@@ -1,4 +1,4 @@
-package game.field;
+package game.values;
 
 public enum MaskValue
 {
@@ -26,14 +26,14 @@ public enum MaskValue
 	
 	private static MaskValue[]	VALUES;
 	
-	static void init()
+	public static void init()
 	{
 		VALUES = new MaskValue[values().length];
 		for (MaskValue value : values())
 			VALUES[value.mId] = value;
 	}
 	
-	static MaskValue get(byte aId)
+	public static MaskValue get(byte aId)
 	{
 		return VALUES[aId];
 	}

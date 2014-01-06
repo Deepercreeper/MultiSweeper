@@ -1,10 +1,10 @@
-package game.field;
+package game.util;
 
 public class Tile
 {
 	private final int	mX, mY;
 	
-	Tile(int aX, int aY)
+	public Tile(int aX, int aY)
 	{
 		mX = aX;
 		mY = aY;

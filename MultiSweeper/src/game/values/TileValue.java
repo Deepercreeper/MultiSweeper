@@ -1,4 +1,4 @@
-package game.field;
+package game.values;
 
 public enum TileValue
 {
@@ -26,14 +26,14 @@ public enum TileValue
 	
 	private static TileValue[]	VALUES;
 	
-	static void init()
+	public static void init()
 	{
 		VALUES = new TileValue[values().length];
 		for (TileValue value : values())
 			VALUES[value.mId] = value;
 	}
 	
-	static TileValue get(byte aId)
+	public static TileValue get(byte aId)
 	{
 		return VALUES[aId];
 	}
