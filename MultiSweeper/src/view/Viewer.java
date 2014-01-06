@@ -16,11 +16,6 @@ public class Viewer extends JFrame
 	
 	private BufferedImage	mImage;
 	
-	public static void main(String[] args)
-	{
-		new Viewer(0);
-	}
-	
 	public Viewer(int aSweeperId)
 	{
 		mSweeper = Sweeper.createSweeper(aSweeperId, this);
