@@ -7,12 +7,13 @@ public abstract class Masks
 {
 	private final MaskValue[]	mMasks;
 	
-	private final MaskValue		mOpen;
+	private final MaskValue		mOpen, mNothing;
 	
 	protected Masks()
 	{
 		mMasks = createMasks();
 		mOpen = findOpen();
+		mNothing = findNothing();
 	}
 	
 	public MaskValue getOpen()
@@ -20,9 +21,23 @@ public abstract class Masks
 		return mOpen;
 	}
 	
+	public MaskValue getNothing()
+	{
+		return mNothing;
+	}
+	
 	public MaskValue get(byte aId)
 	{
 		return mMasks[aId];
+	}
+	
+	private MaskValue findNothing()
+	{
+		for (MaskValue mask : mMasks)
+			if (mask.isNothing()) return mask;
+		Log.exception("No Nothing Mask Defined!");
+		Sweeper.forceStop();
+		return null;
 	}
 	
 	private MaskValue findOpen()

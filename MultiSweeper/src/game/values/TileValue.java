@@ -6,18 +6,21 @@ public class TileValue
 	
 	private final boolean	mIsEmpty, mIsBomb;
 	
+	private final String	mImage;
+	
 	/**
 	 * Creates a new tile representing the bomb.
 	 * 
 	 * @param aId
 	 *            the id for the bomb.
 	 */
-	public TileValue(int aId)
+	public TileValue(int aId, String aImage)
 	{
 		mId = (byte) aId;
 		mAddId = (byte) aId;
 		mIsEmpty = false;
 		mIsBomb = true;
+		mImage = aImage;
 	}
 	
 	/**
@@ -30,12 +33,18 @@ public class TileValue
 	 * @param aIsEmpty
 	 *            whether this is the empty tile or not.
 	 */
-	public TileValue(int aId, int aAddId, boolean aIsEmpty)
+	public TileValue(int aId, int aAddId, boolean aIsEmpty, String aImage)
 	{
 		mId = (byte) aId;
 		mIsEmpty = aIsEmpty;
 		mAddId = (byte) aAddId;
 		mIsBomb = false;
+		mImage = aImage;
+	}
+	
+	public String getImage()
+	{
+		return mImage;
 	}
 	
 	public byte getId()

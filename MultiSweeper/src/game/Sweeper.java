@@ -4,6 +4,9 @@ import game.analyzer.Analyzer;
 import game.field.Field;
 import game.util.Tile;
 import game.values.Tiles;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import view.Viewer;
@@ -21,6 +24,8 @@ public abstract class Sweeper
 	private final Analyzer	mAnalyzer;
 	
 	protected final Field	mField;
+	
+	protected int			mMouseX, mMouseY;
 	
 	private boolean			mRunning, mGenerate;
 	
@@ -44,7 +49,7 @@ public abstract class Sweeper
 			mViewer.repaint();
 			try
 			{
-				Thread.sleep(1);
+				Thread.sleep(10);
 			}
 			catch (InterruptedException e)
 			{
@@ -100,25 +105,43 @@ public abstract class Sweeper
 		}
 	}
 	
-	protected abstract void stopSweeper();
+	public void mouseClick(int aX, int aY, boolean aDown, int aButton)
+	{
+		if ( !aDown)
+		{
+			final Tile tile = getSelectedTile(aX, aY);
+			final int x = tile.getX(), y = tile.getY();
+			if (x < 0 || y < 0 || x >= mWidth || y >= mHeight) return;
+			if (aButton == MouseEvent.BUTTON1) leftClick(x, y);
+			else if (aButton == MouseEvent.BUTTON3) rightClick(x, y);
+		}
+	}
 	
-	public abstract void update();
+	public void mouseMove(int aX, int aY)
+	{
+		mMouseX = aX;
+		mMouseY = aY;
+	}
 	
-	public abstract void render();
-	
-	public abstract void mouseClick(int aX, int aY, boolean aDown, int aButton);
-	
-	public abstract void mouseMove(int aX, int aY);
-	
-	public abstract void key(int aKey, boolean aDown);
-	
-	protected abstract Field createField();
+	public void render()
+	{
+		Graphics g = mImage.getGraphics();
+		g.setColor(Color.white);
+		g.fillRect(0, 0, mWindowWidth, mWindowHeight);
+		
+		renderField(g);
+		
+		renderSelected(g);
+		
+		g.dispose();
+	}
 	
 	public void init(BufferedImage aImage)
 	{
 		mImage = aImage;
 		mWindowWidth = mImage.getWidth();
 		mWindowHeight = mImage.getHeight();
+		refreshSize();
 	}
 	
 	public static Sweeper createSweeper(int aSweeperId, Viewer aViewer)
@@ -126,7 +149,7 @@ public abstract class Sweeper
 		switch (aSweeperId)
 		{
 			case 0 :
-				return new TestSweeper(aViewer);
+				return new HexSweeper(aViewer);
 			default :
 				return null;
 		}
@@ -137,4 +160,24 @@ public abstract class Sweeper
 		if (SWEEPER != null) SWEEPER.stop();
 		else System.exit(0);
 	}
+	
+	protected abstract void renderField(Graphics g);
+	
+	protected abstract void renderSelected(Graphics g);
+	
+	protected abstract void leftClick(int aX, int aY);
+	
+	protected abstract void rightClick(int aX, int aY);
+	
+	public abstract void key(int aKey, boolean aDown);
+	
+	protected abstract Tile getSelectedTile(int aX, int aY);
+	
+	protected abstract Field createField();
+	
+	protected abstract void refreshSize();
+	
+	protected abstract void stopSweeper();
+	
+	public abstract void update();
 }

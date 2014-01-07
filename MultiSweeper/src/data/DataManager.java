@@ -17,15 +17,15 @@ public class DataManager
 	private DataManager()
 	{}
 	
-	public static void init()
+	public static BufferedImage getImage(String aName)
 	{
-		for (Name name : Name.values())
-			IMAGES.put(name.getName(), loadImage(name.getName()));
-	}
-	
-	public static BufferedImage getImage(Name aName)
-	{
-		return IMAGES.get(aName.getName());
+		BufferedImage image = IMAGES.get(aName);
+		if (image == null)
+		{
+			image = loadImage(aName);
+			IMAGES.put(aName, image);
+		}
+		return image;
 	}
 	
 	private static BufferedImage loadImage(String aName)

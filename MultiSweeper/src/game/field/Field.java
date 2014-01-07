@@ -133,7 +133,14 @@ public abstract class Field
 	{
 		mWidth = aWidth;
 		mHeight = aHeight;
-		mTiles = new byte[aWidth][aHeight];
-		mMasks = new byte[aWidth][aHeight];
+		final byte empty = mTileSet.getEmpty().getId(), nothing = mMaskSet.getNothing().getId();
+		mTiles = new byte[mWidth][mHeight];
+		mMasks = new byte[mWidth][mHeight];
+		for (int x = 0; x < mWidth; x++ )
+			for (int y = 0; y < mHeight; y++ )
+			{
+				mTiles[x][y] = empty;
+				mMasks[x][y] = nothing;
+			}
 	}
 }

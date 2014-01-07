@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
-import data.DataManager;
 
 @SuppressWarnings("serial")
 public class Viewer extends JFrame
@@ -19,7 +18,6 @@ public class Viewer extends JFrame
 	
 	public Viewer(int aSweeperId)
 	{
-		DataManager.init();
 		mSweeper = Sweeper.createSweeper(aSweeperId, this);
 		init();
 		start();
