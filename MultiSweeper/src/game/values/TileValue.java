@@ -15,7 +15,7 @@ public class TileValue
 	public TileValue(int aId)
 	{
 		mId = (byte) aId;
-		mAddId = -1;
+		mAddId = (byte) aId;
 		mIsEmpty = false;
 		mIsBomb = true;
 	}

@@ -24,6 +24,16 @@ public abstract class Field
 		mTileSet = createTiles();
 	}
 	
+	public Masks getMasks()
+	{
+		return mMaskSet;
+	}
+	
+	public Tiles getTiles()
+	{
+		return mTileSet;
+	}
+	
 	public byte getTile(int aX, int aY)
 	{
 		if (aX < 0 || aY < 0 || aX >= mWidth || aY >= mHeight) return -1;

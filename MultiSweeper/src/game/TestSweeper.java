@@ -1,7 +1,7 @@
 package game;
 
 import game.field.Field;
-import game.field.TestField;
+import game.field.HexField;
 import java.awt.Graphics;
 import view.Viewer;
 
@@ -52,6 +52,6 @@ public class TestSweeper extends Sweeper
 	@Override
 	protected Field createField()
 	{
-		return new TestField();
+		return new HexField();
 	}
 }

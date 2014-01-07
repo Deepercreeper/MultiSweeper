@@ -2,7 +2,14 @@ package game.util;
 
 public class Tile
 {
+	private static int	WIDTH;
+	
 	private final int	mX, mY;
+	
+	public static void initWidth(int aWidth)
+	{
+		WIDTH = aWidth;
+	}
 	
 	public Tile(int aX, int aY)
 	{
@@ -29,6 +36,12 @@ public class Tile
 			return t.mX == mX && t.mY == mY;
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return mX + WIDTH * mY;
 	}
 	
 	@Override
