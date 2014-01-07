@@ -4,7 +4,6 @@ import game.analyzer.Analyzer;
 import game.field.Field;
 import game.util.Tile;
 import game.values.Tiles;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import view.Viewer;
@@ -41,7 +40,8 @@ public abstract class Sweeper
 			while (mGenerate)
 				generate();
 			update();
-			render(mImage.getGraphics());
+			render();
+			mViewer.repaint();
 			try
 			{
 				Thread.sleep(1);
@@ -104,7 +104,7 @@ public abstract class Sweeper
 	
 	public abstract void update();
 	
-	public abstract void render(Graphics g);
+	public abstract void render();
 	
 	public abstract void mouseClick(int aX, int aY, boolean aDown, int aButton);
 	
