@@ -10,6 +10,8 @@ import data.Name;
 
 public class TestSweeper extends Sweeper
 {
+	private static final float	HEX_CONST	= 1.35f;
+	
 	public TestSweeper(Viewer aViewer)
 	{
 		super(aViewer);
@@ -26,18 +28,19 @@ public class TestSweeper extends Sweeper
 	public void render()
 	{
 		Graphics g = mImage.getGraphics();
-		g.setColor(Color.red);
+		g.setColor(Color.white);
 		g.fillRect(0, 0, mWindowWidth, mWindowHeight);
-		
-		final float tileWidth = mWindowWidth / (float) mWidth, tileHeight = mWindowHeight / mHeight;
+		g.setColor(Color.black);
+		final float tileWidth = mWindowWidth / (mWidth + 0.5f), tileHeight = mWindowHeight / mHeight;
 		
 		int xPos, yPos;
 		for (int x = 0; x < mWidth; x++ )
 			for (int y = 0; y < mHeight; y++ )
 			{
-				xPos = (int) (x * tileWidth);
+				xPos = (int) (x * tileWidth + (y % 2) * tileWidth / 2);
 				yPos = (int) (y * tileHeight);
-				g.drawImage(DataManager.getImage(Name.HEX_TILE), xPos, yPos, (int) tileWidth, (int) tileHeight, null);
+				g.drawImage(DataManager.getImage(Name.HEX_TILE), xPos, yPos, (int) tileWidth, (int) (tileHeight * HEX_CONST), null);
+				g.drawString(x + " " + y, (int) (xPos + tileWidth / 2), (int) (yPos + tileHeight * HEX_CONST / 2));
 			}
 		g.dispose();
 	}

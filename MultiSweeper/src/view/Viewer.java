@@ -90,6 +90,7 @@ public class Viewer extends JFrame
 		mWidth = getContentPane().getWidth();
 		mHeight = getContentPane().getHeight();
 		mImage = new BufferedImage(mWidth, mHeight, BufferedImage.TYPE_INT_ARGB);
+		mSweeper.init(mImage);
 	}
 	
 	private void start()
