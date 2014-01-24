@@ -40,9 +40,9 @@ public abstract class Field
 		return mTiles[aX][aY];
 	}
 	
-	public byte getTile(Tile aTile)
+	public byte getTile(int aTile)
 	{
-		return getTile(aTile.getX(), aTile.getY());
+		return getTile(Tile.getX(aTile), Tile.getY(aTile));
 	}
 	
 	public byte getMask(int aX, int aY)
@@ -51,31 +51,21 @@ public abstract class Field
 		return mMasks[aX][aY];
 	}
 	
-	public byte getMask(Tile aTile)
-	{
-		return getMask(aTile.getX(), aTile.getY());
-	}
-	
 	public TileValue getTileValue(int aX, int aY)
 	{
 		if (aX < 0 || aY < 0 || aX >= mWidth || aY >= mHeight) return null;
 		return mTileSet.get(mTiles[aX][aY]);
 	}
 	
-	public TileValue getTileValue(Tile aTile)
+	public TileValue getTileValue(int aTile)
 	{
-		return getTileValue(aTile.getX(), aTile.getY());
+		return getTileValue(Tile.getX(aTile), Tile.getY(aTile));
 	}
 	
 	public MaskValue getMaskValue(int aX, int aY)
 	{
 		if (aX < 0 || aY < 0 || aX >= mWidth || aY >= mHeight) return null;
 		return mMaskSet.get(mMasks[aX][aY]);
-	}
-	
-	public MaskValue getMaskValue(Tile aTile)
-	{
-		return getMaskValue(aTile.getX(), aTile.getY());
 	}
 	
 	public void setTile(int aX, int aY, byte aId)
@@ -88,9 +78,9 @@ public abstract class Field
 		mTiles[aX][aY] = aId;
 	}
 	
-	public void setTile(Tile aTile, byte aId)
+	public void setTile(int aTile, byte aId)
 	{
-		setTile(aTile.getX(), aTile.getY(), aId);
+		setTile(Tile.getX(aTile), Tile.getY(aTile), aId);
 	}
 	
 	public void setMask(int aX, int aY, byte aId)
@@ -103,17 +93,17 @@ public abstract class Field
 		mMasks[aX][aY] = aId;
 	}
 	
-	public void setMask(Tile aTile, byte aId)
+	public void setMask(int aTile, byte aId)
 	{
-		setMask(aTile.getX(), aTile.getY(), aId);
+		setMask(Tile.getX(aTile), Tile.getY(aTile), aId);
 	}
 	
-	public HashSet<Tile> getBorderOf(Tile aTile)
+	public HashSet<Integer> getBorderOf(int aTile)
 	{
-		return getBorderOf(aTile.getX(), aTile.getY());
+		return getBorderOf(Tile.getX(aTile), Tile.getY(aTile));
 	}
 	
-	public abstract HashSet<Tile> getBorderOf(int aX, int aY);
+	public abstract HashSet<Integer> getBorderOf(int aX, int aY);
 	
 	protected abstract Masks createMasks();
 	

@@ -19,7 +19,7 @@ public abstract class Sweeper
 	
 	protected BufferedImage	mImage;
 	
-	protected int			mWidth	= 20, mHeight = 20, mBombs = 100, mWindowWidth, mWindowHeight;
+	protected int			mWidth	= 20, mHeight = 20, mBombs = 100, mLives = 3, mWindowWidth, mWindowHeight;
 	
 	private final Viewer	mViewer;
 	
@@ -98,7 +98,7 @@ public abstract class Sweeper
 			else
 			{
 				mField.setTile(x, y, bombId);
-				for (Tile tile : mField.getBorderOf(x, y))
+				for (int tile : mField.getBorderOf(x, y))
 				{
 					byte tileId = mField.getTile(tile);
 					mField.setTile(tile, tiles.get(tileId).getNextId());
@@ -111,8 +111,8 @@ public abstract class Sweeper
 	{
 		if ( !aDown)
 		{
-			final Tile tile = getSelectedTile(aX, aY);
-			final int x = tile.getX(), y = tile.getY();
+			final int tile = getSelectedTile(aX, aY);
+			final int x = Tile.getX(tile), y = Tile.getY(tile);
 			if (x < 0 || y < 0 || x >= mWidth || y >= mHeight) return;
 			if (aButton == MouseEvent.BUTTON1) leftClick(x, y);
 			else if (aButton == MouseEvent.BUTTON3) rightClick(x, y);
@@ -169,7 +169,7 @@ public abstract class Sweeper
 		if (mask.isNothing())
 		{
 			TileValue tile = mField.getTileValue(aX, aY);
-			mAnalyzer.openTile(new Tile(aX, aY));
+			mAnalyzer.openTile(aX, aY);
 			if (tile.isBomb()) die(aX, aY);
 		}
 	}
@@ -211,7 +211,7 @@ public abstract class Sweeper
 	
 	public abstract void key(int aKey, boolean aDown);
 	
-	protected abstract Tile getSelectedTile(int aX, int aY);
+	protected abstract int getSelectedTile(int aX, int aY);
 	
 	protected abstract Field createField();
 	

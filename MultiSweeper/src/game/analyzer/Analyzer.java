@@ -9,7 +9,7 @@ public class Analyzer
 {
 	private final Field						mField;
 	
-	private final HashSet<HashSet<Tile>>	mAreas;
+	private final HashSet<HashSet<Integer>>	mAreas;
 	
 	public Analyzer(Field aField)
 	{
@@ -21,31 +21,31 @@ public class Analyzer
 	{
 		final int width = mField.getWidth(), height = mField.getHeight();
 		mAreas.clear();
-		HashSet<Tile> emptyTiles = new HashSet<>();
+		HashSet<Integer> emptyTiles = new HashSet<>();
 		for (int x = 0; x < width; x++ )
 			for (int y = 0; y < height; y++ )
-				if (mField.getTileValue(x, y).isEmpty()) emptyTiles.add(new Tile(x, y));
+				if (mField.getTileValue(x, y).isEmpty()) emptyTiles.add(Tile.create(x, y));
 		
 		System.out.println("Empty tiles: " + emptyTiles.size());
-		for (Tile tile : emptyTiles)
+		for (int tile : emptyTiles)
 		{
 			if (isInsideAreas(tile)) continue;
 			addArea(tile);
 		}
 	}
 	
-	private void addArea(Tile aTile)
+	private void addArea(int aTile)
 	{
 		final byte emptyTile = mField.getTiles().getEmpty().getId();
-		HashSet<Tile> area = new HashSet<>(), newBorders = new HashSet<>(), tempBorders = new HashSet<>();
+		HashSet<Integer> area = new HashSet<>(), newBorders = new HashSet<>(), tempBorders = new HashSet<>();
 		boolean changed;
 		area.add(aTile);
 		newBorders.add(aTile);
 		do
 		{
 			changed = false;
-			for (Tile tile : newBorders)
-				for (Tile newTile : mField.getBorderOf(tile))
+			for (int tile : newBorders)
+				for (int newTile : mField.getBorderOf(tile))
 					if (mField.getTile(newTile) == emptyTile && !area.contains(newTile))
 					{
 						changed = true;
@@ -60,30 +60,30 @@ public class Analyzer
 		mAreas.add(area);
 	}
 	
-	private boolean isInsideAreas(Tile aTile)
+	private boolean isInsideAreas(int aTile)
 	{
-		for (HashSet<Tile> area : mAreas)
+		for (HashSet<Integer> area : mAreas)
 			if (area.contains(aTile)) return true;
 		return false;
 	}
 	
-	private HashSet<Tile> getContainingArea(Tile aTile)
+	private HashSet<Integer> getContainingArea(int aTile)
 	{
-		for (HashSet<Tile> area : mAreas)
+		for (HashSet<Integer> area : mAreas)
 			if (area.contains(aTile)) return area;
 		return null;
 	}
 	
 	public void open(int aX, int aY)
 	{
-		final Tile tile = new Tile(aX, aY);
-		for (HashSet<Tile> area : mAreas)
+		final int tile = Tile.create(aX, aY);
+		for (HashSet<Integer> area : mAreas)
 			if (area.contains(tile)) openArea(area);
 	}
 	
-	public HashSet<HashSet<Tile>> getAreas()
+	public HashSet<HashSet<Integer>> getAreas()
 	{
-		HashSet<HashSet<Tile>> areas = new HashSet<>();
+		HashSet<HashSet<Integer>> areas = new HashSet<>();
 		areas.addAll(mAreas);
 		return areas;
 	}
@@ -91,7 +91,7 @@ public class Analyzer
 	public void openFirst()
 	{
 		int i = (int) (Math.random() * mAreas.size());
-		for (HashSet<Tile> area : mAreas)
+		for (HashSet<Integer> area : mAreas)
 			if (i-- == 0)
 			{
 				openArea(area);
@@ -99,28 +99,29 @@ public class Analyzer
 			}
 	}
 	
-	private void openArea(HashSet<Tile> aArea)
+	private void openArea(HashSet<Integer> aArea)
 	{
-		for (Tile tile : aArea)
+		for (int tile : aArea)
 			openAreaTile(tile);
 	}
 	
-	private void openAreaTile(Tile aTile)
+	private void openAreaTile(int aTile)
 	{
 		final byte openId = mField.getMasks().getOpen().getId();
-		mField.setMask(aTile, openId);
+		final int x = Tile.getX(aTile), y = Tile.getY(aTile);
+		mField.setMask(x, y, openId);
 		TileValue tileValue;
-		for (Tile tile : mField.getBorderOf(aTile))
+		for (int tile : mField.getBorderOf(x, y))
 		{
 			tileValue = mField.getTileValue(tile);
 			if ( !tileValue.isEmpty() && !tileValue.isBomb()) mField.setMask(tile, openId);
 		}
 	}
 	
-	public void openTile(Tile aTile)
+	public void openTile(int aX, int aY)
 	{
 		final byte openId = mField.getMasks().getOpen().getId();
-		if (mField.getTileValue(aTile).isEmpty() && isInsideAreas(aTile)) openArea(getContainingArea(aTile));
-		else mField.setMask(aTile, openId);
+		if (mField.getTileValue(aX, aY).isEmpty() && isInsideAreas(Tile.create(aX, aY))) openArea(getContainingArea(Tile.create(aX, aY)));
+		else mField.setMask(aX, aY, openId);
 	}
 }

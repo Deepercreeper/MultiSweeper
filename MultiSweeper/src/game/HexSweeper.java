@@ -60,17 +60,17 @@ public class HexSweeper extends Sweeper
 	protected void renderSelected(Graphics g)
 	{
 		int xPos, yPos;
-		final Tile mouse = getSelectedTile(mMouseX, mMouseY);
-		int mouseX = mouse.getX(), mouseY = mouse.getY();
+		final int mouse = getSelectedTile(mMouseX, mMouseY);
+		final int mouseX = Tile.getX(mouse), mouseY = Tile.getY(mouse);
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < mWidth && mouseY < mHeight)
 		{
 			xPos = (int) (mouseX * mTileWidth + (mouseY % 2) * mTileWidth / 2);
 			yPos = (int) (mouseY * mTileHeight);
 			g.drawImage(DataManager.getImage(SELECTED_TILE), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
-			for (Tile tile : mField.getBorderOf(mouse))
+			for (int tile : mField.getBorderOf(mouseX, mouseY))
 			{
-				xPos = (int) (tile.getX() * mTileWidth + (tile.getY() % 2) * mTileWidth / 2);
-				yPos = (int) (tile.getY() * mTileHeight);
+				xPos = (int) (Tile.getX(tile) * mTileWidth + (Tile.getY(tile) % 2) * mTileWidth / 2);
+				yPos = (int) (Tile.getY(tile) * mTileHeight);
 				g.drawImage(DataManager.getImage(SELECTED_TILE), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
 			}
 		}
@@ -89,7 +89,7 @@ public class HexSweeper extends Sweeper
 	}
 	
 	@Override
-	protected Tile getSelectedTile(int aX, int aY)
+	protected int getSelectedTile(int aX, int aY)
 	{
 		
 		int y = (int) (aY / mTileHeight);
@@ -107,7 +107,7 @@ public class HexSweeper extends Sweeper
 			if (y % 2 == 1) x++ ;
 			y-- ;
 		}
-		return new Tile(x, y);
+		return Tile.create(x, y);
 	}
 	
 	@Override
@@ -120,8 +120,7 @@ public class HexSweeper extends Sweeper
 	@Override
 	protected void die(int aX, int aY)
 	{
-		// TODO
-		Log.log("Died!");
+		if (--mLives == 0) Log.log("Died!");
 	}
 	
 	@Override
