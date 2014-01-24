@@ -5,15 +5,32 @@ import log.Log;
 
 public abstract class Masks
 {
+	protected enum MaskState
+	{
+		NOTHING, OPEN, QUESTION, FLAG;
+	}
+	
 	private final MaskValue[]	mMasks;
 	
-	private final MaskValue		mOpen, mNothing;
+	private final MaskValue		mOpen, mNothing, mQuestion, mFlag;
 	
 	protected Masks()
 	{
 		mMasks = createMasks();
 		mOpen = findOpen();
 		mNothing = findNothing();
+		mQuestion = findQuestion();
+		mFlag = findFlag();
+	}
+	
+	public MaskValue getFlag()
+	{
+		return mFlag;
+	}
+	
+	public MaskValue getQuestion()
+	{
+		return mQuestion;
 	}
 	
 	public MaskValue getOpen()
@@ -29,6 +46,24 @@ public abstract class Masks
 	public MaskValue get(byte aId)
 	{
 		return mMasks[aId];
+	}
+	
+	private MaskValue findFlag()
+	{
+		for (MaskValue mask : mMasks)
+			if (mask.isFlag()) return mask;
+		Log.exception("No Flag Mask Defined!");
+		Sweeper.forceStop();
+		return null;
+	}
+	
+	private MaskValue findQuestion()
+	{
+		for (MaskValue mask : mMasks)
+			if (mask.isQuestion()) return mask;
+		Log.exception("No Question Mask Defined!");
+		Sweeper.forceStop();
+		return null;
 	}
 	
 	private MaskValue findNothing()

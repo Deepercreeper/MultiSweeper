@@ -1,18 +1,19 @@
 package game.values;
 
+import game.values.Masks.MaskState;
+
 public class MaskValue
 {
-	private final byte	mId;
+	private final byte		mId;
 	
-	private final boolean	mIsOpen, mIsNothing;
+	private final MaskState	mState;
 	
 	private final String	mImage;
 	
-	public MaskValue(int aId, boolean aIsOpen, boolean aIsNothing, String aImage)
+	public MaskValue(int aId, MaskState aState, String aImage)
 	{
 		mId = (byte) aId;
-		mIsOpen = aIsOpen;
-		mIsNothing = aIsNothing;
+		mState = aState;
 		mImage = aImage;
 	}
 	
@@ -26,13 +27,23 @@ public class MaskValue
 		return mId;
 	}
 	
+	public boolean isFlag()
+	{
+		return mState == MaskState.FLAG;
+	}
+	
 	public boolean isNothing()
 	{
-		return mIsNothing;
+		return mState == MaskState.NOTHING;
+	}
+	
+	public boolean isQuestion()
+	{
+		return mState == MaskState.QUESTION;
 	}
 	
 	public boolean isOpen()
 	{
-		return mIsOpen;
+		return mState == MaskState.OPEN;
 	}
 }

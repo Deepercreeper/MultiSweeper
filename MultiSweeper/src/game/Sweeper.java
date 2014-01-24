@@ -3,6 +3,8 @@ package game;
 import game.analyzer.Analyzer;
 import game.field.Field;
 import game.util.Tile;
+import game.values.MaskValue;
+import game.values.TileValue;
 import game.values.Tiles;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -17,7 +19,7 @@ public abstract class Sweeper
 	
 	protected BufferedImage	mImage;
 	
-	protected int			mWidth	= 20, mHeight = 20, mBombs = 150, mWindowWidth, mWindowHeight;
+	protected int			mWidth	= 20, mHeight = 20, mBombs = 100, mWindowWidth, mWindowHeight;
 	
 	private final Viewer	mViewer;
 	
@@ -161,13 +163,51 @@ public abstract class Sweeper
 		else System.exit(0);
 	}
 	
+	public void openTile(int aX, int aY)
+	{
+		MaskValue mask = mField.getMaskValue(aX, aY);
+		if (mask.isNothing())
+		{
+			TileValue tile = mField.getTileValue(aX, aY);
+			mAnalyzer.openTile(new Tile(aX, aY));
+			if (tile.isBomb()) die(aX, aY);
+		}
+	}
+	
+	public void markBomb(int aX, int aY)
+	{
+		MaskValue mask = mField.getMaskValue(aX, aY);
+		if ( !mask.isOpen())
+		{
+			if (mask.isNothing()) mField.setMask(aX, aY, mField.getMasks().getFlag().getId());
+			else if (mask.isFlag()) mField.setMask(aX, aY, mField.getMasks().getQuestion().getId());
+			else mField.setMask(aX, aY, mField.getMasks().getNothing().getId());
+		}
+	}
+	
+	public void remarkBomb(int aX, int aY)
+	{
+		MaskValue mask = mField.getMaskValue(aX, aY);
+		if ( !mask.isOpen()) mField.setMask(aX, aY, mField.getMasks().getNothing().getId());
+	}
+	
+	protected void leftClick(int aX, int aY)
+	{
+		openTile(aX, aY);
+	}
+	
+	protected void rightClick(int aX, int aY)
+	{
+		markBomb(aX, aY);
+	}
+	
+	protected abstract void win();
+	
+	protected abstract void die(int aX, int aY);
+	
 	protected abstract void renderField(Graphics g);
 	
 	protected abstract void renderSelected(Graphics g);
-	
-	protected abstract void leftClick(int aX, int aY);
-	
-	protected abstract void rightClick(int aX, int aY);
 	
 	public abstract void key(int aKey, boolean aDown);
 	

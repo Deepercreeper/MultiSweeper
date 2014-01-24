@@ -7,6 +7,7 @@ import game.values.MaskValue;
 import game.values.TileValue;
 import java.awt.Graphics;
 import java.awt.Polygon;
+import log.Log;
 import view.Viewer;
 import data.DataManager;
 
@@ -76,22 +77,9 @@ public class HexSweeper extends Sweeper
 	}
 	
 	@Override
-	protected void leftClick(int aX, int aY)
-	{	
-		
-	}
-	
-	@Override
-	protected void rightClick(int aX, int aY)
-	{	
-		
-	}
-	
-	@Override
 	public void key(int aKey, boolean aDown)
 	{
-		// TODOV Auto-generated method stub
-		
+		// TODO
 	}
 	
 	@Override
@@ -127,5 +115,19 @@ public class HexSweeper extends Sweeper
 	{
 		mTileWidth = mWindowWidth / (mWidth + 0.5f);
 		mTileHeight = mWindowHeight / mHeight;
+	}
+	
+	@Override
+	protected void die(int aX, int aY)
+	{
+		// TODO
+		Log.log("Died!");
+	}
+	
+	@Override
+	protected void win()
+	{
+		// TODO
+		Log.log("Win!");
 	}
 }

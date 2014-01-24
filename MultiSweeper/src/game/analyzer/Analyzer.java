@@ -2,6 +2,7 @@ package game.analyzer;
 
 import game.field.Field;
 import game.util.Tile;
+import game.values.TileValue;
 import java.util.HashSet;
 
 public class Analyzer
@@ -66,6 +67,13 @@ public class Analyzer
 		return false;
 	}
 	
+	private HashSet<Tile> getContainingArea(Tile aTile)
+	{
+		for (HashSet<Tile> area : mAreas)
+			if (area.contains(aTile)) return area;
+		return null;
+	}
+	
 	public void open(int aX, int aY)
 	{
 		final Tile tile = new Tile(aX, aY);
@@ -94,14 +102,25 @@ public class Analyzer
 	private void openArea(HashSet<Tile> aArea)
 	{
 		for (Tile tile : aArea)
-			openTile(tile);
+			openAreaTile(tile);
+	}
+	
+	private void openAreaTile(Tile aTile)
+	{
+		final byte openId = mField.getMasks().getOpen().getId();
+		mField.setMask(aTile, openId);
+		TileValue tileValue;
+		for (Tile tile : mField.getBorderOf(aTile))
+		{
+			tileValue = mField.getTileValue(tile);
+			if ( !tileValue.isEmpty() && !tileValue.isBomb()) mField.setMask(tile, openId);
+		}
 	}
 	
 	public void openTile(Tile aTile)
 	{
 		final byte openId = mField.getMasks().getOpen().getId();
-		mField.setMask(aTile, openId);
-		for (Tile tile : mField.getBorderOf(aTile))
-			mField.setMask(tile, openId);
+		if (mField.getTileValue(aTile).isEmpty() && isInsideAreas(aTile)) openArea(getContainingArea(aTile));
+		else mField.setMask(aTile, openId);
 	}
 }
