@@ -74,13 +74,6 @@ public class Analyzer
 		return null;
 	}
 	
-	public void open(int aX, int aY)
-	{
-		final int tile = Tile.create(aX, aY);
-		for (HashSet<Integer> area : mAreas)
-			if (area.contains(tile)) openArea(area);
-	}
-	
 	public HashSet<HashSet<Integer>> getAreas()
 	{
 		HashSet<HashSet<Integer>> areas = new HashSet<>();
@@ -88,15 +81,16 @@ public class Analyzer
 		return areas;
 	}
 	
-	public void openFirst()
+	public boolean openFirst()
 	{
 		int i = (int) (Math.random() * mAreas.size());
 		for (HashSet<Integer> area : mAreas)
 			if (i-- == 0)
 			{
 				openArea(area);
-				break;
+				return true;
 			}
+		return false;
 	}
 	
 	private void openArea(HashSet<Integer> aArea)

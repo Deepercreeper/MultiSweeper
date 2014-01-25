@@ -2,6 +2,7 @@ package game;
 
 import game.analyzer.Analyzer;
 import game.field.Field;
+import game.solver.Solver;
 import game.util.Tile;
 import game.values.MaskValue;
 import game.values.TileValue;
@@ -25,6 +26,8 @@ public abstract class Sweeper
 	
 	private final Analyzer	mAnalyzer;
 	
+	private final Solver	mSolver;
+	
 	protected final Field	mField;
 	
 	protected int			mMouseX, mMouseY;
@@ -36,6 +39,7 @@ public abstract class Sweeper
 		mViewer = aViewer;
 		mField = createField();
 		mAnalyzer = new Analyzer(mField);
+		mSolver = new Solver(mField, mAnalyzer);
 		SWEEPER = this;
 	}
 	
@@ -76,12 +80,7 @@ public abstract class Sweeper
 		
 		mAnalyzer.analyze();
 		
-		if (mAnalyzer.getAreas().size() > 0)
-		{
-			mAnalyzer.openFirst();
-			
-			mGenerate = false;
-		}
+		if (mAnalyzer.openFirst()) mGenerate = false;
 	}
 	
 	private void setBombs()

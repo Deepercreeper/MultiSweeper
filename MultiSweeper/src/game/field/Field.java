@@ -68,6 +68,11 @@ public abstract class Field
 		return mMaskSet.get(mMasks[aX][aY]);
 	}
 	
+	public MaskValue getMaskValue(int aTile)
+	{
+		return getMaskValue(Tile.getX(aTile), Tile.getY(aTile));
+	}
+	
 	public void setTile(int aX, int aY, byte aId)
 	{
 		if (aX < 0 || aY < 0 || aX >= mWidth || aY >= mHeight)
