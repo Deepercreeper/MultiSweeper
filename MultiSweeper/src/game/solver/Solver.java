@@ -31,22 +31,29 @@ public class Solver
 	
 	public void solve()
 	{
+		new SolveStarter().start();
+	}
+	
+	private void startSolve()
+	{
 		mSolving = true;
 		while (mSolving)
 		{
+			mChanged = false;
 			collectNumbers();
-			normalSolve();
-			if ( !mChanged) areaSolve();
-			if ( !mChanged) randomSolve();
-			if ( !mChanged) mSolving = false;
+			if (mSolving) normalSolve();
+			if (mSolving && !mChanged) areaSolve();
+			if (mSolving && !mChanged) randomSolve();
+			if (mSolving && !mChanged) mSolving = false;
 		}
 	}
 	
 	private void normalSolve()
 	{
+		mSolversDone = 0;
 		for (int id : mNumbers.keySet())
 			new NormalSolver(id).start();
-		while (mSolversDone < mNumberId - 1)
+		while (mSolversDone < mNumberId + 1)
 		{
 			try
 			{
@@ -62,6 +69,16 @@ public class Solver
 	private void areaSolve()
 	{	
 		
+	}
+	
+	public boolean isSolving()
+	{
+		return mSolving;
+	}
+	
+	public void stopSolving()
+	{
+		mSolving = false;
 	}
 	
 	private void randomSolve()
@@ -86,6 +103,11 @@ public class Solver
 	private void addNumber(int aTile)
 	{
 		HashSet<Integer> numbers = mNumbers.get(mNumberId);
+		if (numbers == null)
+		{
+			numbers = new HashSet<>();
+			mNumbers.put(mNumberId, numbers);
+		}
 		if (numbers.size() < MAX_NUMBER_SIZE) numbers.add(aTile);
 		else
 		{
@@ -146,7 +168,7 @@ public class Solver
 		
 		private boolean solveTile(int aTile)
 		{
-			int nothings = getNothings(aTile), flags = getFlags(aTile), number = mField.getTileValue(aTile).getId();
+			final int nothings = getNothings(aTile), flags = getFlags(aTile), number = mField.getTileValue(aTile).getId();
 			if (nothings == 0) return false;
 			if (number - flags == nothings)
 			{
@@ -170,6 +192,15 @@ public class Solver
 			mChanged |= changed;
 			mSolversDone++ ;
 			Log.log("<" + mId + ">");
+		}
+	}
+	
+	private class SolveStarter extends Thread
+	{
+		@Override
+		public void run()
+		{
+			startSolve();
 		}
 	}
 }

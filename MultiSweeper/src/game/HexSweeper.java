@@ -50,8 +50,8 @@ public class HexSweeper extends Sweeper
 				yPos = (int) (y * mTileHeight);
 				final TileValue tile = mField.getTileValue(x, y);
 				final MaskValue mask = mField.getMaskValue(x, y);
-				if (mask.isOpen()) g.drawImage(DataManager.getImage(tile.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
 				g.drawImage(DataManager.getImage(mask.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
+				if (mask.isOpen()) g.drawImage(DataManager.getImage(tile.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
 			}
 		}
 	}
@@ -74,12 +74,6 @@ public class HexSweeper extends Sweeper
 				g.drawImage(DataManager.getImage(SELECTED_TILE), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
 			}
 		}
-	}
-	
-	@Override
-	public void key(int aKey, boolean aDown)
-	{
-		// TODO
 	}
 	
 	@Override

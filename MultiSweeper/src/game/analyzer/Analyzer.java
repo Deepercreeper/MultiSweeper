@@ -114,8 +114,12 @@ public class Analyzer
 	
 	public void openTile(int aX, int aY)
 	{
-		final byte openId = mField.getMasks().getOpen().getId();
+		final byte openId = mField.getMasks().getOpen().getId(), openBombId = mField.getMasks().getOpenBomb().getId();
 		if (mField.getTileValue(aX, aY).isEmpty() && isInsideAreas(Tile.create(aX, aY))) openArea(getContainingArea(Tile.create(aX, aY)));
-		else mField.setMask(aX, aY, openId);
+		else
+		{
+			if (mField.getTileValue(aX, aY).isBomb()) mField.setMask(aX, aY, openBombId);
+			else mField.setMask(aX, aY, openId);
+		}
 	}
 }

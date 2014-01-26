@@ -7,12 +7,12 @@ public abstract class Masks
 {
 	protected enum MaskState
 	{
-		NOTHING, OPEN, QUESTION, FLAG;
+		NOTHING, OPEN, QUESTION, FLAG, OPEN_BOMB;
 	}
 	
 	private final MaskValue[]	mMasks;
 	
-	private final MaskValue		mOpen, mNothing, mQuestion, mFlag;
+	private final MaskValue		mOpen, mNothing, mQuestion, mFlag, mOpenBomb;
 	
 	protected Masks()
 	{
@@ -21,6 +21,12 @@ public abstract class Masks
 		mNothing = findNothing();
 		mQuestion = findQuestion();
 		mFlag = findFlag();
+		mOpenBomb = findOpenBomb();
+	}
+	
+	public MaskValue getOpenBomb()
+	{
+		return mOpenBomb;
 	}
 	
 	public MaskValue getFlag()
@@ -48,10 +54,19 @@ public abstract class Masks
 		return mMasks[aId];
 	}
 	
+	private MaskValue findOpenBomb()
+	{
+		for (MaskValue mask : mMasks)
+			if (mask.isFlag() && mask.isOpen()) return mask;
+		Log.exception("No Open Bomb Mask Defined!");
+		Sweeper.forceStop();
+		return null;
+	}
+	
 	private MaskValue findFlag()
 	{
 		for (MaskValue mask : mMasks)
-			if (mask.isFlag()) return mask;
+			if (mask.isFlag() && !mask.isOpen()) return mask;
 		Log.exception("No Flag Mask Defined!");
 		Sweeper.forceStop();
 		return null;

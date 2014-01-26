@@ -29,7 +29,7 @@ public class MaskValue
 	
 	public boolean isFlag()
 	{
-		return mState == MaskState.FLAG;
+		return mState == MaskState.FLAG || mState == MaskState.OPEN_BOMB;
 	}
 	
 	public boolean isNothing()
@@ -44,6 +44,6 @@ public class MaskValue
 	
 	public boolean isOpen()
 	{
-		return mState == MaskState.OPEN;
+		return mState == MaskState.OPEN || mState == MaskState.OPEN_BOMB;
 	}
 }

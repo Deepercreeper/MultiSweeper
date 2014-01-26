@@ -9,6 +9,7 @@ import game.values.TileValue;
 import game.values.Tiles;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -200,6 +201,22 @@ public abstract class Sweeper
 		markBomb(aX, aY);
 	}
 	
+	public void key(int aKey, boolean aDown)
+	{
+		if (aDown)
+		{
+			if (aKey == KeyEvent.VK_ESCAPE) stop();
+		}
+		else
+		{
+			if (aKey == KeyEvent.VK_S)
+			{
+				if (mSolver.isSolving()) mSolver.stopSolving();
+				else mSolver.solve();
+			}
+		}
+	}
+	
 	protected abstract void win();
 	
 	protected abstract void die(int aX, int aY);
@@ -207,8 +224,6 @@ public abstract class Sweeper
 	protected abstract void renderField(Graphics g);
 	
 	protected abstract void renderSelected(Graphics g);
-	
-	public abstract void key(int aKey, boolean aDown);
 	
 	protected abstract int getSelectedTile(int aX, int aY);
 	
