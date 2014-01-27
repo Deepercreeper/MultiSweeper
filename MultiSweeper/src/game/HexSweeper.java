@@ -7,7 +7,6 @@ import game.values.MaskValue;
 import game.values.TileValue;
 import java.awt.Graphics;
 import java.awt.Polygon;
-import log.Log;
 import view.Viewer;
 import data.DataManager;
 
@@ -109,18 +108,5 @@ public class HexSweeper extends Sweeper
 	{
 		mTileWidth = mWindowWidth / (mWidth + 0.5f);
 		mTileHeight = mWindowHeight / mHeight;
-	}
-	
-	@Override
-	protected void die(int aX, int aY)
-	{
-		if (--mLives == 0) Log.log("Died!");
-	}
-	
-	@Override
-	protected void win()
-	{
-		// TODO
-		Log.log("Win!");
 	}
 }

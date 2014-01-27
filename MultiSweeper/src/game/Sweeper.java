@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import log.Log;
 import view.Viewer;
 
 public abstract class Sweeper
@@ -21,7 +22,9 @@ public abstract class Sweeper
 	
 	protected BufferedImage	mImage;
 	
-	protected int			mWidth	= 20, mHeight = 20, mBombs = 100, mLives = 3, mWindowWidth, mWindowHeight;
+	private final int		mStartLives	= 5;
+	
+	protected int			mWidth		= 50, mHeight = 50, mBombs = (int) (mWidth * mHeight * 0.18), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
 	
 	private final Viewer	mViewer;
 	
@@ -30,8 +33,6 @@ public abstract class Sweeper
 	private final Solver	mSolver;
 	
 	protected final Field	mField;
-	
-	protected int			mMouseX, mMouseY;
 	
 	private boolean			mRunning, mGenerate;
 	
@@ -74,6 +75,10 @@ public abstract class Sweeper
 	
 	private void generate()
 	{
+		mSolver.setDone(false);
+		
+		mLives = mStartLives;
+		
 		Tile.initWidth(mWidth);
 		mField.reload(mWidth, mHeight);
 		
@@ -214,12 +219,24 @@ public abstract class Sweeper
 				if (mSolver.isSolving()) mSolver.stopSolving();
 				else mSolver.solve();
 			}
+			if (aKey == KeyEvent.VK_SPACE) mGenerate = true;
 		}
 	}
 	
-	protected abstract void win();
+	public void win()
+	{
+		mSolver.setDone(true);
+		Log.log("Win!");
+	}
 	
-	protected abstract void die(int aX, int aY);
+	public void die(int aX, int aY)
+	{
+		if (--mLives == 0)
+		{
+			mSolver.setDone(true);
+			Log.log("Died!");
+		}
+	}
 	
 	protected abstract void renderField(Graphics g);
 	

@@ -45,6 +45,11 @@ public abstract class Field
 		return getTile(Tile.getX(aTile), Tile.getY(aTile));
 	}
 	
+	public byte getMask(int aTile)
+	{
+		return getMask(Tile.getX(aTile), Tile.getY(aTile));
+	}
+	
 	public byte getMask(int aX, int aY)
 	{
 		if (aX < 0 || aY < 0 || aX >= mWidth || aY >= mHeight) return -1;
