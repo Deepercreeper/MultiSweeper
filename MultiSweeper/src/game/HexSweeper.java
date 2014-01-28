@@ -16,30 +16,17 @@ public class HexSweeper extends Sweeper
 	
 	private static final String	SELECTED_TILE	= "hexMaskSelected";
 	
-	private float				mTileWidth, mTileHeight;
-	
 	public HexSweeper(Viewer aViewer)
 	{
 		super(aViewer);
 	}
 	
 	@Override
-	protected void stopSweeper()
-	{
-		// TODOV Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void update()
-	{
-		// TODOV Auto-generated method stub
-	}
-	
-	@Override
 	protected void renderField(Graphics g)
 	{
 		int xPos, yPos;
+		TileValue tile;
+		MaskValue mask;
 		
 		for (int x = 0; x < mWidth; x++ )
 		{
@@ -47,8 +34,8 @@ public class HexSweeper extends Sweeper
 			{
 				xPos = (int) (x * mTileWidth + (y % 2) * mTileWidth / 2);
 				yPos = (int) (y * mTileHeight);
-				final TileValue tile = mField.getTileValue(x, y);
-				final MaskValue mask = mField.getMaskValue(x, y);
+				tile = mField.getTileValue(x, y);
+				mask = mField.getMaskValue(x, y);
 				g.drawImage(DataManager.getImage(mask.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
 				if (mask.isOpen()) g.drawImage(DataManager.getImage(tile.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
 			}

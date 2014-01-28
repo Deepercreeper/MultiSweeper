@@ -21,9 +21,11 @@ public abstract class Sweeper
 	
 	protected BufferedImage	mImage;
 	
+	protected float			mTileWidth, mTileHeight;
+	
 	private final int		mStartLives	= 5;
 	
-	protected int			mWidth		= 20, mHeight = 20, mBombs = (int) (mWidth * mHeight * 0.2), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
+	protected int			mWidth		= 30, mHeight = 30, mBombs = (int) (mWidth * mHeight * 0.2), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
 	
 	private final Viewer	mViewer;
 	
@@ -51,7 +53,6 @@ public abstract class Sweeper
 		{
 			while (mGenerate)
 				generate();
-			update();
 			render();
 			mViewer.repaint();
 			try
@@ -69,7 +70,6 @@ public abstract class Sweeper
 	public void stop()
 	{
 		mRunning = false;
-		stopSweeper();
 	}
 	
 	private void generate()
@@ -162,6 +162,8 @@ public abstract class Sweeper
 		{
 			case 0 :
 				return new HexSweeper(aViewer);
+			case 1 :
+				return new OctSweeper(aViewer);
 			default :
 				return null;
 		}
@@ -247,8 +249,4 @@ public abstract class Sweeper
 	protected abstract Field createField();
 	
 	protected abstract void refreshSize();
-	
-	protected abstract void stopSweeper();
-	
-	public abstract void update();
 }

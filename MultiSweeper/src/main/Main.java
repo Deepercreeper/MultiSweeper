@@ -9,7 +9,7 @@ public class Main
 	
 	public static void main(String[] args)
 	{
-		if (args.length == 0) new Viewer(0);
+		if (args.length == 0) new Viewer(1);
 		else new Viewer(Integer.parseInt(args[0]));
 	}
 }
