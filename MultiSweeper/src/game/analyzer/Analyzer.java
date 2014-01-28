@@ -1,18 +1,23 @@
 package game.analyzer;
 
+import game.Sweeper;
 import game.field.Field;
 import game.util.Tile;
+import game.values.MaskValue;
 import game.values.TileValue;
 import java.util.HashSet;
 
 public class Analyzer
 {
+	private final Sweeper					mSweeper;
+	
 	private final Field						mField;
 	
 	private final HashSet<HashSet<Integer>>	mAreas;
 	
-	public Analyzer(Field aField)
+	public Analyzer(Field aField, Sweeper aSweeper)
 	{
+		mSweeper = aSweeper;
 		mField = aField;
 		mAreas = new HashSet<>();
 	}
@@ -26,7 +31,6 @@ public class Analyzer
 			for (int y = 0; y < height; y++ )
 				if (mField.getTileValue(x, y).isEmpty()) emptyTiles.add(Tile.create(x, y));
 		
-		System.out.println("Empty tiles: " + emptyTiles.size());
 		for (int tile : emptyTiles)
 		{
 			if (isInsideAreas(tile)) continue;
@@ -110,6 +114,36 @@ public class Analyzer
 			tileValue = mField.getTileValue(tile);
 			if ( !tileValue.isEmpty() && !tileValue.isBomb()) mField.setMask(tile, openId);
 		}
+	}
+	
+	public void userOpenTile(int aX, int aY)
+	{
+		MaskValue mask = mField.getMaskValue(aX, aY);
+		if (mask.isNothing())
+		{
+			TileValue tile = mField.getTileValue(aX, aY);
+			openTile(aX, aY);
+			if (tile.isBomb()) mSweeper.die(aX, aY);
+			if (won()) mSweeper.win();
+		}
+	}
+	
+	private boolean won()
+	{
+		if (mSweeper.isDied()) return false;
+		final byte open = mField.getMasks().getOpen().getId(), openBomb = mField.getMasks().getOpenBomb().getId(), bomb = mField.getTiles().getBomb().getId();
+		for (int x = 0; x < mField.getWidth(); x++ )
+			for (int y = 0; y < mField.getHeight(); y++ )
+			{
+				final byte mask = mField.getMask(x, y);
+				if (mask != open && mask != openBomb && mField.getTile(x, y) != bomb) return false;
+			}
+		return true;
+	}
+	
+	public int getBombs()
+	{
+		return mSweeper.getBombs();
 	}
 	
 	public void openTile(int aX, int aY)

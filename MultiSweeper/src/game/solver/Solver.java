@@ -62,7 +62,23 @@ public class Solver
 			if (mDone || mSolving && !mChanged) break;
 		}
 		mSolving = false;
+		if ( !mDone) openNothings();
 		sStarter = null;
+	}
+	
+	private void openNothings()
+	{
+		int flags = 0;
+		final HashSet<Integer> nothings = new HashSet<>();
+		for (int x = 0; x < mField.getWidth(); x++ )
+			for (int y = 0; y < mField.getHeight(); y++ )
+			{
+				final MaskValue mask = mField.getMaskValue(x, y);
+				if (mask.isFlag()) flags++ ;
+				if (mask.isNothing()) nothings.add(Tile.create(x, y));
+			}
+		if (mAnalyzer.getBombs() == flags) for (int tile : nothings)
+			mAnalyzer.userOpenTile(Tile.getX(tile), Tile.getY(tile));
 	}
 	
 	private void normalSolve()
@@ -127,7 +143,7 @@ public class Solver
 	private void openTiles(Set<Integer> aTiles)
 	{
 		for (int tile : aTiles)
-			mAnalyzer.openTile(Tile.getX(tile), Tile.getY(tile));
+			mAnalyzer.userOpenTile(Tile.getX(tile), Tile.getY(tile));
 	}
 	
 	private void markTiles(Set<Integer> aTiles)
@@ -182,7 +198,7 @@ public class Solver
 			{
 				final int x = Tile.getX(tile), y = Tile.getY(tile);
 				Log.log("Opening: " + x + " " + y);
-				mAnalyzer.openTile(x, y);
+				mAnalyzer.userOpenTile(x, y);
 				mChanged = true;
 				break;
 			}
@@ -267,7 +283,7 @@ public class Solver
 		private void openBorders(int aTile)
 		{
 			for (int tile : mField.getBorderOf(aTile))
-				if (mField.getMaskValue(tile).isNothing()) mAnalyzer.openTile(Tile.getX(tile), Tile.getY(tile));
+				if (mField.getMaskValue(tile).isNothing()) mAnalyzer.userOpenTile(Tile.getX(tile), Tile.getY(tile));
 		}
 		
 		private boolean solveTile(int aTile)
@@ -294,7 +310,10 @@ public class Solver
 			for (int tile : mSolverNumbers)
 				changed |= solveTile(tile);
 			mChanged |= changed;
-			mFinishedSolvers.add(this);
+			synchronized (mFinishedSolvers)
+			{
+				mFinishedSolvers.add(this);
+			}
 			Log.log("<" + mId + "-" + mSolverNumbers.size() + ">");
 		}
 	}

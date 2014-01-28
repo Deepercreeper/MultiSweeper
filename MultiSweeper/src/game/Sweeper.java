@@ -5,7 +5,6 @@ import game.field.Field;
 import game.solver.Solver;
 import game.util.Tile;
 import game.values.MaskValue;
-import game.values.TileValue;
 import game.values.Tiles;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -24,7 +23,7 @@ public abstract class Sweeper
 	
 	private final int		mStartLives	= 5;
 	
-	protected int			mWidth		= 50, mHeight = 50, mBombs = (int) (mWidth * mHeight * 0.18), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
+	protected int			mWidth		= 20, mHeight = 20, mBombs = (int) (mWidth * mHeight * 0.2), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
 	
 	private final Viewer	mViewer;
 	
@@ -34,13 +33,13 @@ public abstract class Sweeper
 	
 	protected final Field	mField;
 	
-	private boolean			mRunning, mGenerate;
+	private boolean			mRunning, mGenerate, mDied;
 	
 	public Sweeper(Viewer aViewer)
 	{
 		mViewer = aViewer;
 		mField = createField();
-		mAnalyzer = new Analyzer(mField);
+		mAnalyzer = new Analyzer(mField, this);
 		mSolver = new Solver(mField, mAnalyzer);
 		SWEEPER = this;
 	}
@@ -75,6 +74,7 @@ public abstract class Sweeper
 	
 	private void generate()
 	{
+		mDied = false;
 		mSolver.setDone(false);
 		
 		mLives = mStartLives;
@@ -110,6 +110,11 @@ public abstract class Sweeper
 				}
 			}
 		}
+	}
+	
+	public int getBombs()
+	{
+		return mBombs;
 	}
 	
 	public void mouseClick(int aX, int aY, boolean aDown, int aButton)
@@ -168,17 +173,6 @@ public abstract class Sweeper
 		else System.exit(0);
 	}
 	
-	public void openTile(int aX, int aY)
-	{
-		MaskValue mask = mField.getMaskValue(aX, aY);
-		if (mask.isNothing())
-		{
-			TileValue tile = mField.getTileValue(aX, aY);
-			mAnalyzer.openTile(aX, aY);
-			if (tile.isBomb()) die(aX, aY);
-		}
-	}
-	
 	public void markBomb(int aX, int aY)
 	{
 		MaskValue mask = mField.getMaskValue(aX, aY);
@@ -196,9 +190,14 @@ public abstract class Sweeper
 		if ( !mask.isOpen()) mField.setMask(aX, aY, mField.getMasks().getNothing().getId());
 	}
 	
+	public boolean isDied()
+	{
+		return mDied;
+	}
+	
 	protected void leftClick(int aX, int aY)
 	{
-		openTile(aX, aY);
+		mAnalyzer.userOpenTile(aX, aY);
 	}
 	
 	protected void rightClick(int aX, int aY)
@@ -233,6 +232,7 @@ public abstract class Sweeper
 	{
 		if (--mLives == 0)
 		{
+			mDied = true;
 			mSolver.setDone(true);
 			Log.log("Died!");
 		}
