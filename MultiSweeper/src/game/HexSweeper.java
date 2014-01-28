@@ -22,24 +22,13 @@ public class HexSweeper extends Sweeper
 	}
 	
 	@Override
-	protected void renderField(Graphics g)
+	protected void renderTile(int aX, int aY, Graphics g)
 	{
-		int xPos, yPos;
-		TileValue tile;
-		MaskValue mask;
-		
-		for (int x = 0; x < mWidth; x++ )
-		{
-			for (int y = 0; y < mHeight; y++ )
-			{
-				xPos = (int) (x * mTileWidth + (y % 2) * mTileWidth / 2);
-				yPos = (int) (y * mTileHeight);
-				tile = mField.getTileValue(x, y);
-				mask = mField.getMaskValue(x, y);
-				g.drawImage(DataManager.getImage(mask.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
-				if (mask.isOpen()) g.drawImage(DataManager.getImage(tile.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
-			}
-		}
+		final int xPos = (int) (aX * mTileWidth + (aY % 2) * mTileWidth / 2), yPos = (int) (aY * mTileHeight);
+		final TileValue tile = mField.getTileValue(aX, aY);
+		final MaskValue mask = mField.getMaskValue(aX, aY);
+		g.drawImage(DataManager.getImage(mask.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
+		if (mask.isOpen()) g.drawImage(DataManager.getImage(tile.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) (mTileHeight * HEX_CONST), null);
 	}
 	
 	@Override

@@ -25,7 +25,7 @@ public abstract class Sweeper
 	
 	private final int		mStartLives	= 5;
 	
-	protected int			mWidth		= 30, mHeight = 30, mBombs = (int) (mWidth * mHeight * 0.2), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
+	protected int			mWidth		= 30, mHeight = 20, mBombs = (int) (mWidth * mHeight * 0.25), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
 	
 	private final Viewer	mViewer;
 	
@@ -164,6 +164,8 @@ public abstract class Sweeper
 				return new HexSweeper(aViewer);
 			case 1 :
 				return new OctSweeper(aViewer);
+			case 2 :
+				return new TriSweeper(aViewer);
 			default :
 				return null;
 		}
@@ -240,7 +242,14 @@ public abstract class Sweeper
 		}
 	}
 	
-	protected abstract void renderField(Graphics g);
+	protected void renderField(Graphics g)
+	{
+		for (int x = 0; x < mField.getWidth(); x++ )
+			for (int y = 0; y < mField.getHeight(); y++ )
+				renderTile(x, y, g);
+	}
+	
+	protected abstract void renderTile(int aX, int aY, Graphics g);
 	
 	protected abstract void renderSelected(Graphics g);
 	
