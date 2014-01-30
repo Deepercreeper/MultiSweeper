@@ -25,7 +25,7 @@ public abstract class Sweeper
 	
 	private final int		mStartLives	= 5;
 	
-	protected int			mWidth		= 30, mHeight = 20, mBombs = (int) (mWidth * mHeight * 0.25), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
+	protected int			mWidth		= 20, mHeight = 10, mBombs = (int) (mWidth * mHeight * 0.25), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
 	
 	private final Viewer	mViewer;
 	

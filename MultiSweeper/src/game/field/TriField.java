@@ -26,7 +26,7 @@ public class TriField extends Field
 		if (getTile(aX - 1, aY + 1) != -1) tiles.add(Tile.create(aX - 1, aY + 1));
 		if (getTile(aX + 1, aY + 1) != -1) tiles.add(Tile.create(aX + 1, aY + 1));
 		
-		final int y = (aY + aX) % 2 == 0 ? aY - 1 : aY + 1;
+		final int y = (aY + aX) % 2 == 0 ? aY + 1 : aY - 1;
 		
 		if (getTile(aX - 2, y) != -1) tiles.add(Tile.create(aX - 2, y));
 		if (getTile(aX + 2, y) != -1) tiles.add(Tile.create(aX + 2, y));

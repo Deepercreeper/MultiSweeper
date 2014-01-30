@@ -25,8 +25,8 @@ public class TriSweeper extends Sweeper
 		final int xPos = (int) (aX * mTileWidth / 2), yPos = (int) (aY * mTileHeight);
 		final TileValue tile = mField.getTileValue(aX, aY);
 		final MaskValue mask = mField.getMaskValue(aX, aY);
-		g.drawImage(DataManager.getImage(((aX + aY) % 2 == 0 ? REVERSE : "") + mask.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
-		if (mask.isOpen()) g.drawImage(DataManager.getImage(((aX + aY) % 2 == 0 ? REVERSE : "") + tile.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
+		g.drawImage(DataManager.getImage(((aX + aY) % 2 == 1 ? REVERSE : "") + mask.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
+		if (mask.isOpen()) g.drawImage(DataManager.getImage(((aX + aY) % 2 == 1 ? REVERSE : "") + tile.getImage()), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
 	}
 	
 	@Override
@@ -40,14 +40,14 @@ public class TriSweeper extends Sweeper
 			int x, y;
 			xPos = (int) (mouseX * mTileWidth / 2);
 			yPos = (int) (mouseY * mTileHeight);
-			g.drawImage(DataManager.getImage(((mouseX + mouseY) % 2 == 0 ? REVERSE : "") + SELECTED_TILE), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
+			g.drawImage(DataManager.getImage(((mouseX + mouseY) % 2 == 1 ? REVERSE : "") + SELECTED_TILE), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
 			for (int tile : mField.getBorderOf(mouseX, mouseY))
 			{
 				x = Tile.getX(tile);
 				y = Tile.getY(tile);
 				xPos = (int) (x * mTileWidth / 2);
 				yPos = (int) (y * mTileHeight);
-				g.drawImage(DataManager.getImage(((x + y) % 2 == 0 ? REVERSE : "") + SELECTED_TILE), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
+				g.drawImage(DataManager.getImage(((x + y) % 2 == 1 ? REVERSE : "") + SELECTED_TILE), xPos, yPos, (int) mTileWidth + 1, (int) mTileHeight + 1, null);
 			}
 		}
 	}
@@ -57,12 +57,13 @@ public class TriSweeper extends Sweeper
 	{
 		final int y = (int) (aY / mTileHeight);
 		int x = (int) (aX * 2 / mTileWidth);
+		
 		Polygon triangle;
-		if ((x + y) % 2 == 0) triangle = new Polygon(new int[] { (int) mTileWidth, (int) mTileWidth, 0 }, new int[] { 0, (int) mTileHeight, 0 }, 3);
-		else triangle = new Polygon(new int[] { (int) mTileWidth, (int) mTileWidth, 0 }, new int[] { 0, (int) mTileHeight, (int) mTileHeight }, 3);
+		if ((x + y) % 2 == 0) triangle = new Polygon(new int[] { 0, (int) mTileWidth / 2, 0 }, new int[] { 0, 0, (int) mTileHeight }, 3);
+		else triangle = new Polygon(new int[] { 0, (int) mTileWidth / 2, 0 }, new int[] { 0, (int) mTileHeight, (int) mTileHeight }, 3);
 		
-		if (x > 0 && y > 0 && triangle.contains(aX % x, aY % y)) x++ ;
-		
+		if (triangle.contains((int) (aX % (mTileWidth / 2)), (int) (aY % mTileHeight))) x-- ;
+		if (x < 0 || y < 0 || x >= mField.getWidth() || y >= mField.getHeight()) return -1;
 		return Tile.create(x, y);
 	}
 	
