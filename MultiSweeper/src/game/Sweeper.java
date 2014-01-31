@@ -167,7 +167,11 @@ public abstract class Sweeper
 			case 1 :
 				return new OctSweeper(aViewer);
 			case 2 :
+				return new DodecaSweeper(aViewer);
+			case 3 :
 				return new TriSweeper(aViewer);
+			case 4 :
+				return new NovemSweeper(aViewer);
 			default :
 				return null;
 		}

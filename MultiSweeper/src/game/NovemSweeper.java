@@ -1,14 +1,14 @@
 package game;
 
 import game.field.Field;
-import game.field.TriField;
+import game.field.NovemField;
 import game.renderer.Renderer;
 import game.renderer.Triangle;
 import view.Viewer;
 
-public class TriSweeper extends Sweeper
+public class NovemSweeper extends Sweeper
 {
-	public TriSweeper(Viewer aViewer)
+	public NovemSweeper(Viewer aViewer)
 	{
 		super(aViewer);
 	}
@@ -22,6 +22,6 @@ public class TriSweeper extends Sweeper
 	@Override
 	protected Field createField()
 	{
-		return new TriField();
+		return new NovemField();
 	}
 }
