@@ -2,6 +2,7 @@ package game;
 
 import game.analyzer.Analyzer;
 import game.field.Field;
+import game.renderer.Renderer;
 import game.solver.Solver;
 import game.util.Tile;
 import game.values.MaskValue;
@@ -17,25 +18,25 @@ import view.Viewer;
 
 public abstract class Sweeper
 {
-	private static Sweeper	SWEEPER;
+	private static Sweeper		SWEEPER;
 	
-	protected BufferedImage	mImage;
+	protected BufferedImage		mImage;
 	
-	protected float			mTileWidth, mTileHeight;
+	private final int			mStartLives	= 5;
 	
-	private final int		mStartLives	= 5;
+	protected int				mWidth		= 20, mHeight = 10, mBombs = (int) (mWidth * mHeight * 0.25), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
 	
-	protected int			mWidth		= 20, mHeight = 10, mBombs = (int) (mWidth * mHeight * 0.25), mLives = mStartLives, mWindowWidth, mWindowHeight, mMouseX, mMouseY;
+	private final Viewer		mViewer;
 	
-	private final Viewer	mViewer;
+	private final Analyzer		mAnalyzer;
 	
-	private final Analyzer	mAnalyzer;
+	private final Solver		mSolver;
 	
-	private final Solver	mSolver;
+	protected final Field		mField;
 	
-	protected final Field	mField;
+	protected final Renderer	mRenderer;
 	
-	private boolean			mRunning, mGenerate, mDied;
+	private boolean				mRunning, mGenerate, mDied;
 	
 	public Sweeper(Viewer aViewer)
 	{
@@ -43,6 +44,7 @@ public abstract class Sweeper
 		mField = createField();
 		mAnalyzer = new Analyzer(mField, this);
 		mSolver = new Solver(mField, mAnalyzer);
+		mRenderer = createRenderer();
 		SWEEPER = this;
 	}
 	
@@ -153,7 +155,7 @@ public abstract class Sweeper
 		mImage = aImage;
 		mWindowWidth = mImage.getWidth();
 		mWindowHeight = mImage.getHeight();
-		refreshSize();
+		mRenderer.refreshSize(mWindowWidth, mWindowHeight);
 	}
 	
 	public static Sweeper createSweeper(int aSweeperId, Viewer aViewer)
@@ -249,13 +251,30 @@ public abstract class Sweeper
 				renderTile(x, y, g);
 	}
 	
-	protected abstract void renderTile(int aX, int aY, Graphics g);
+	protected abstract Renderer createRenderer();
 	
-	protected abstract void renderSelected(Graphics g);
+	protected void renderTile(int aX, int aY, Graphics g)
+	{
+		mRenderer.renderTile(aX, aY, g);
+	}
 	
-	protected abstract int getSelectedTile(int aX, int aY);
+	protected void renderSelected(Graphics g)
+	{
+		final int mouse = getSelectedTile(mMouseX, mMouseY);
+		final int mouseX = Tile.getX(mouse), mouseY = Tile.getY(mouse);
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < mWidth && mouseY < mHeight)
+		{
+			mRenderer.renderSelectedTile(mouseX, mouseY, g);
+			for (int tile : mField.getBorderOf(mouseX, mouseY))
+				mRenderer.renderSelectedTile(Tile.getX(tile), Tile.getY(tile), g);
+		}
+	}
+	
+	protected int getSelectedTile(int aX, int aY)
+	{
+		return mRenderer.getSelectedTile(aX, aY);
+	}
 	
 	protected abstract Field createField();
 	
-	protected abstract void refreshSize();
 }
