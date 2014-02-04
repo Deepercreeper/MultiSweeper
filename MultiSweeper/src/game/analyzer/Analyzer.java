@@ -3,17 +3,18 @@ package game.analyzer;
 import game.Sweeper;
 import game.field.Field;
 import game.util.Tile;
+import game.util.TileSet;
 import game.values.MaskValue;
 import game.values.TileValue;
 import java.util.HashSet;
 
 public class Analyzer
 {
-	private final Sweeper					mSweeper;
+	private final Sweeper			mSweeper;
 	
-	private final Field						mField;
+	private final Field				mField;
 	
-	private final HashSet<HashSet<Integer>>	mAreas;
+	private final HashSet<TileSet>	mAreas;
 	
 	public Analyzer(Field aField, Sweeper aSweeper)
 	{
@@ -27,9 +28,8 @@ public class Analyzer
 		final int width = mField.getWidth(), height = mField.getHeight();
 		mAreas.clear();
 		HashSet<Integer> emptyTiles = new HashSet<>();
-		for (int x = 0; x < width; x++ )
-			for (int y = 0; y < height; y++ )
-				if (mField.getTileValue(x, y).isEmpty()) emptyTiles.add(Tile.create(x, y));
+		for (int tile = 0; tile < width * height; tile++ )
+			if (mField.getTileValue(tile).isEmpty()) emptyTiles.add(tile);
 		
 		for (int tile : emptyTiles)
 		{
@@ -41,7 +41,7 @@ public class Analyzer
 	private void addArea(int aTile)
 	{
 		final byte emptyTile = mField.getTiles().getEmpty().getId();
-		HashSet<Integer> area = new HashSet<>(), newBorders = new HashSet<>(), tempBorders = new HashSet<>();
+		TileSet area = new TileSet(mField), newBorders = new TileSet(mField), tempBorders = new TileSet(mField);
 		boolean changed;
 		area.add(aTile);
 		newBorders.add(aTile);
@@ -49,13 +49,16 @@ public class Analyzer
 		{
 			changed = false;
 			for (int tile : newBorders)
-				for (int newTile : mField.getBorderOf(tile))
+			{
+				TileSet border = mField.getBorderOf(tile);
+				for (int newTile : border)
 					if (mField.getTile(newTile) == emptyTile && !area.contains(newTile))
 					{
 						changed = true;
 						area.add(newTile);
 						tempBorders.add(newTile);
 					}
+			}
 			newBorders.clear();
 			newBorders.addAll(tempBorders);
 			tempBorders.clear();
@@ -66,21 +69,21 @@ public class Analyzer
 	
 	private boolean isInsideAreas(int aTile)
 	{
-		for (HashSet<Integer> area : mAreas)
+		for (TileSet area : mAreas)
 			if (area.contains(aTile)) return true;
 		return false;
 	}
 	
-	private HashSet<Integer> getContainingArea(int aTile)
+	private TileSet getContainingArea(int aTile)
 	{
-		for (HashSet<Integer> area : mAreas)
+		for (TileSet area : mAreas)
 			if (area.contains(aTile)) return area;
 		return null;
 	}
 	
-	public HashSet<HashSet<Integer>> getAreas()
+	public HashSet<TileSet> getAreas()
 	{
-		HashSet<HashSet<Integer>> areas = new HashSet<>();
+		HashSet<TileSet> areas = new HashSet<>();
 		areas.addAll(mAreas);
 		return areas;
 	}
@@ -88,7 +91,7 @@ public class Analyzer
 	public boolean openFirst()
 	{
 		int i = (int) (Math.random() * mAreas.size());
-		for (HashSet<Integer> area : mAreas)
+		for (TileSet area : mAreas)
 			if (i-- == 0)
 			{
 				openArea(area);
@@ -97,7 +100,7 @@ public class Analyzer
 		return false;
 	}
 	
-	private void openArea(HashSet<Integer> aArea)
+	private void openArea(TileSet aArea)
 	{
 		for (int tile : aArea)
 			openAreaTile(tile);
@@ -109,7 +112,8 @@ public class Analyzer
 		final int x = Tile.getX(aTile), y = Tile.getY(aTile);
 		mField.setMask(x, y, openId);
 		TileValue tileValue;
-		for (int tile : mField.getBorderOf(x, y))
+		TileSet border = mField.getBorderOf(x, y);
+		for (int tile : border)
 		{
 			tileValue = mField.getTileValue(tile);
 			if ( !tileValue.isEmpty() && !tileValue.isBomb()) mField.setMask(tile, openId);
@@ -131,13 +135,13 @@ public class Analyzer
 	private boolean won()
 	{
 		if (mSweeper.isDied()) return false;
+		final int width = mField.getWidth(), height = mField.getHeight();
 		final byte open = mField.getMasks().getOpen().getId(), openBomb = mField.getMasks().getOpenBomb().getId(), bomb = mField.getTiles().getBomb().getId();
-		for (int x = 0; x < mField.getWidth(); x++ )
-			for (int y = 0; y < mField.getHeight(); y++ )
-			{
-				final byte mask = mField.getMask(x, y);
-				if (mask != open && mask != openBomb && mField.getTile(x, y) != bomb) return false;
-			}
+		for (int tile = 0; tile < width * height; tile++ )
+		{
+			final byte mask = mField.getMask(tile);
+			if (mask != open && mask != openBomb && mField.getTile(tile) != bomb) return false;
+		}
 		return true;
 	}
 	

@@ -1,18 +1,16 @@
 package game.field;
 
 import game.util.Tile;
+import game.util.TileSet;
 import game.values.Masks;
-import game.values.Tiles;
 import game.values.sets.HexMasks;
-import game.values.sets.HexTiles;
-import java.util.HashSet;
 
 public class HexField extends Field
 {
 	@Override
-	public HashSet<Integer> getBorderOf(int aX, int aY)
+	public TileSet getBorderOf(int aX, int aY)
 	{
-		HashSet<Integer> tiles = new HashSet<>();
+		TileSet tiles = new TileSet(this);
 		if (getTile(aX - 1, aY) != -1) tiles.add(Tile.create(aX - 1, aY));
 		if (getTile(aX + 1, aY) != -1) tiles.add(Tile.create(aX + 1, aY));
 		
@@ -40,8 +38,15 @@ public class HexField extends Field
 	}
 	
 	@Override
-	protected Tiles createTiles()
+	protected String getPrefix()
 	{
-		return new HexTiles();
+		return "hex";
 	}
+	
+	@Override
+	protected int getTilesCount()
+	{
+		return 6;
+	}
+	
 }

@@ -1,19 +1,16 @@
 package game.field;
 
 import game.util.Tile;
+import game.util.TileSet;
 import game.values.Masks;
-import game.values.Tiles;
 import game.values.sets.OctMasks;
-import game.values.sets.OctTiles;
-import java.util.HashSet;
 
 public class OctField extends Field
 {
-	
 	@Override
-	public HashSet<Integer> getBorderOf(int aX, int aY)
+	public TileSet getBorderOf(int aX, int aY)
 	{
-		HashSet<Integer> tiles = new HashSet<>();
+		TileSet tiles = new TileSet(this);
 		for (int x = aX - 1; x <= aX + 1; x++ )
 			for (int y = aY - 1; y <= aY + 1; y++ )
 				if ((x != aX || y != aY) && getTile(x, y) != -1) tiles.add(Tile.create(x, y));
@@ -27,9 +24,14 @@ public class OctField extends Field
 	}
 	
 	@Override
-	protected Tiles createTiles()
+	protected String getPrefix()
 	{
-		return new OctTiles();
+		return "oct";
 	}
 	
+	@Override
+	protected int getTilesCount()
+	{
+		return 8;
+	}
 }

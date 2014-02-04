@@ -3,15 +3,15 @@ package game.values;
 import game.Sweeper;
 import log.Log;
 
-public abstract class Tiles
+public class Tiles
 {
 	private final TileValue[]	mTiles;
 	
 	private final TileValue		mBomb, mEmpty;
 	
-	protected Tiles()
+	protected Tiles(TileValue[] aTiles)
 	{
-		mTiles = createTiles();
+		mTiles = aTiles;
 		mBomb = findBomb();
 		mEmpty = findEmpty();
 	}
@@ -49,9 +49,13 @@ public abstract class Tiles
 		return mTiles[aId];
 	}
 	
-	/**
-	 * @return the set of tiles used inside the field.<br>
-	 *         {@code TileValue[id].getId() == id} has to be true.
-	 */
-	protected abstract TileValue[] createTiles();
+	public static Tiles create(String aPrefix, int aTilesCount)
+	{
+		TileValue[] tiles = new TileValue[aTilesCount + 2];
+		for (int i = 0; i < aTilesCount; i++ )
+			tiles[i] = new TileValue(i, i + 1, i == 0, aPrefix + "Tile" + i);
+		tiles[aTilesCount] = new TileValue(aTilesCount, aTilesCount, false, aPrefix + "Tile" + (aTilesCount));
+		tiles[aTilesCount + 1] = new TileValue(aTilesCount + 1, aPrefix + "TileBomb");
+		return new Tiles(tiles);
+	}
 }

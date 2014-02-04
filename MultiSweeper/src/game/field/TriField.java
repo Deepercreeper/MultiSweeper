@@ -1,19 +1,16 @@
 package game.field;
 
 import game.util.Tile;
+import game.util.TileSet;
 import game.values.Masks;
-import game.values.Tiles;
 import game.values.sets.TriMasks;
-import game.values.sets.TriTiles;
-import java.util.HashSet;
 
 public class TriField extends Field
 {
-	
 	@Override
-	public HashSet<Integer> getBorderOf(int aX, int aY)
+	public TileSet getBorderOf(int aX, int aY)
 	{
-		HashSet<Integer> tiles = new HashSet<>();
+		TileSet tiles = new TileSet(this);
 		if (getTile(aX - 1, aY) != -1) tiles.add(Tile.create(aX - 1, aY));
 		if (getTile(aX + 1, aY) != -1) tiles.add(Tile.create(aX + 1, aY));
 		
@@ -31,9 +28,14 @@ public class TriField extends Field
 	}
 	
 	@Override
-	protected Tiles createTiles()
+	protected String getPrefix()
 	{
-		return new TriTiles();
+		return "tri";
 	}
 	
+	@Override
+	protected int getTilesCount()
+	{
+		return 3;
+	}
 }

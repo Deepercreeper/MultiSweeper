@@ -1,11 +1,11 @@
 package game.field;
 
 import game.util.Tile;
+import game.util.TileSet;
 import game.values.MaskValue;
 import game.values.Masks;
 import game.values.TileValue;
 import game.values.Tiles;
-import java.util.HashSet;
 import log.Log;
 
 public abstract class Field
@@ -21,7 +21,7 @@ public abstract class Field
 	public Field()
 	{
 		mMaskSet = createMasks();
-		mTileSet = createTiles();
+		mTileSet = Tiles.create(getPrefix(), getTilesCount());
 	}
 	
 	public Masks getMasks()
@@ -45,15 +45,15 @@ public abstract class Field
 		return getTile(Tile.getX(aTile), Tile.getY(aTile));
 	}
 	
-	public byte getMask(int aTile)
-	{
-		return getMask(Tile.getX(aTile), Tile.getY(aTile));
-	}
-	
 	public byte getMask(int aX, int aY)
 	{
 		if (aX < 0 || aY < 0 || aX >= mWidth || aY >= mHeight) return -1;
 		return mMasks[aX][aY];
+	}
+	
+	public byte getMask(int aTile)
+	{
+		return getMask(Tile.getX(aTile), Tile.getY(aTile));
 	}
 	
 	public TileValue getTileValue(int aX, int aY)
@@ -108,16 +108,18 @@ public abstract class Field
 		setMask(Tile.getX(aTile), Tile.getY(aTile), aId);
 	}
 	
-	public HashSet<Integer> getBorderOf(int aTile)
+	public TileSet getBorderOf(int aTile)
 	{
 		return getBorderOf(Tile.getX(aTile), Tile.getY(aTile));
 	}
 	
-	public abstract HashSet<Integer> getBorderOf(int aX, int aY);
+	public abstract TileSet getBorderOf(int aX, int aY);
 	
 	protected abstract Masks createMasks();
 	
-	protected abstract Tiles createTiles();
+	protected abstract String getPrefix();
+	
+	protected abstract int getTilesCount();
 	
 	public int getWidth()
 	{

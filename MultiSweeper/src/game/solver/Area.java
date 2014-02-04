@@ -1,9 +1,9 @@
 package game.solver;
 
 import game.field.Field;
+import game.util.TileSet;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Area
 {
@@ -23,7 +23,7 @@ public class Area
 		mBombs = aBombs;
 	}
 	
-	public void addAll(HashSet<Integer> aTiles)
+	public void addAll(TileSet aTiles)
 	{
 		if (mProbability)
 		{
@@ -63,9 +63,9 @@ public class Area
 		return mBombs;
 	}
 	
-	public Set<Integer> getTiles()
+	public TileSet getTiles()
 	{
-		return mTiles.keySet();
+		return new TileSet(mField, mTiles.keySet());
 	}
 	
 	public void compare(HashSet<Area> aAreas)

@@ -3,32 +3,32 @@ package game.solver;
 import game.analyzer.Analyzer;
 import game.field.Field;
 import game.util.Tile;
+import game.util.TileSet;
 import game.values.MaskValue;
 import game.values.TileValue;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import log.Log;
 
 public class Solver
 {
-	private static final int							MAX_NUMBER_SIZE	= 10;
+	private static final int				MAX_NUMBER_SIZE	= 10;
 	
-	private static Starter								sStarter;
+	private static Starter					sStarter;
 	
-	private final Field									mField;
+	private final Field						mField;
 	
-	private final Analyzer								mAnalyzer;
+	private final Analyzer					mAnalyzer;
 	
-	private final HashMap<Integer, HashSet<Integer>>	mNumbers;
+	private final HashMap<Integer, TileSet>	mNumbers;
 	
-	private final HashSet<Area>							mAreas;
+	private final HashSet<Area>				mAreas;
 	
-	private int											mNumberId;
+	private int								mNumberId;
 	
-	private final HashSet<TileSolver>					mFinishedSolvers;
+	private final HashSet<TileSolver>		mFinishedSolvers;
 	
-	private boolean										mSolving, mChanged, mDone;
+	private boolean							mSolving, mChanged, mDone;
 	
 	public Solver(Field aField, Analyzer aAnalyzer)
 	{
@@ -69,14 +69,14 @@ public class Solver
 	private void openNothings()
 	{
 		int flags = 0;
-		final HashSet<Integer> nothings = new HashSet<>();
-		for (int x = 0; x < mField.getWidth(); x++ )
-			for (int y = 0; y < mField.getHeight(); y++ )
-			{
-				final MaskValue mask = mField.getMaskValue(x, y);
-				if (mask.isFlag()) flags++ ;
-				if (mask.isNothing()) nothings.add(Tile.create(x, y));
-			}
+		final TileSet nothings = new TileSet(mField);
+		final int size = nothings.size();
+		for (int tile = 0; tile < size; tile++ )
+		{
+			final MaskValue mask = mField.getMaskValue(tile);
+			if (mask.isFlag()) flags++ ;
+			if (mask.isNothing()) nothings.add(tile);
+		}
 		if (mAnalyzer.getBombs() == flags) for (int tile : nothings)
 			mAnalyzer.userOpenTile(Tile.getX(tile), Tile.getY(tile));
 	}
@@ -90,7 +90,6 @@ public class Solver
 			for (int id : mNumbers.keySet())
 				new TileSolver(id).start();
 			while (mFinishedSolvers.size() < mNumberId + 1)
-			{
 				try
 				{
 					Thread.sleep(1);
@@ -99,7 +98,6 @@ public class Solver
 				{
 					e.printStackTrace();
 				}
-			}
 		}
 		Log.log("NormalSolve <End>");
 	}
@@ -140,13 +138,13 @@ public class Solver
 		mSolving = false;
 	}
 	
-	private void openTiles(Set<Integer> aTiles)
+	private void openTiles(TileSet aTiles)
 	{
 		for (int tile : aTiles)
 			mAnalyzer.userOpenTile(Tile.getX(tile), Tile.getY(tile));
 	}
 	
-	private void markTiles(Set<Integer> aTiles)
+	private void markTiles(TileSet aTiles)
 	{
 		final byte flag = mField.getMasks().getFlag().getId();
 		for (int tile : aTiles)
@@ -156,8 +154,8 @@ public class Solver
 	private void collectAreas(boolean aProbability)
 	{
 		mAreas.clear();
-		HashSet<Integer> tiles = new HashSet<>();
-		for (HashSet<Integer> areas : mNumbers.values())
+		TileSet tiles = new TileSet(mField);
+		for (TileSet areas : mNumbers.values())
 			tiles.addAll(areas);
 		for (int tile : tiles)
 			mAreas.add(createArea(tile, aProbability));
@@ -168,7 +166,7 @@ public class Solver
 	private Area createArea(int aTile, boolean aProbability)
 	{
 		int flags = 0;
-		HashSet<Integer> areaTiles = new HashSet<>();
+		TileSet areaTiles = new TileSet(mField);
 		for (int tile : mField.getBorderOf(aTile))
 		{
 			MaskValue mask = mField.getMaskValue(tile);
@@ -210,46 +208,46 @@ public class Solver
 	{
 		mNumbers.clear();
 		mNumberId = 0;
-		TileValue tile;
-		for (int x = 0; x < mField.getWidth(); x++ )
-			for (int y = 0; y < mField.getHeight(); y++ )
-				if (mField.getMaskValue(x, y).isOpen())
-				{
-					tile = mField.getTileValue(x, y);
-					if ( !tile.isBomb() && !tile.isEmpty() && isBorder(x, y)) addNumber(Tile.create(x, y));
-				}
+		TileValue value;
+		final int size = mField.getWidth() * mField.getHeight();
+		for (int tile = 0; tile < size; tile++ )
+			if (mField.getMaskValue(tile).isOpen())
+			{
+				value = mField.getTileValue(tile);
+				if ( !value.isBomb() && !value.isEmpty() && isBorder(tile)) addNumber(tile);
+			}
 	}
 	
 	private void addNumber(int aTile)
 	{
-		HashSet<Integer> numbers = mNumbers.get(mNumberId);
+		TileSet numbers = mNumbers.get(mNumberId);
 		if (numbers == null)
 		{
-			numbers = new HashSet<>();
+			numbers = new TileSet(mField);
 			mNumbers.put(mNumberId, numbers);
 		}
 		if (numbers.size() < MAX_NUMBER_SIZE) numbers.add(aTile);
 		else
 		{
 			mNumberId++ ;
-			numbers = new HashSet<>();
+			numbers = new TileSet(mField);
 			numbers.add(aTile);
 			mNumbers.put(mNumberId, numbers);
 		}
 	}
 	
-	private boolean isBorder(int aX, int aY)
+	private boolean isBorder(int aTile)
 	{
-		for (int tile : mField.getBorderOf(aX, aY))
+		for (int tile : mField.getBorderOf(aTile))
 			if (mField.getMaskValue(Tile.getX(tile), Tile.getY(tile)).isNothing()) return true;
 		return false;
 	}
 	
 	private class TileSolver extends Thread
 	{
-		private final int				mId;
+		private final int		mId;
 		
-		private final HashSet<Integer>	mSolverNumbers;
+		private final TileSet	mSolverNumbers;
 		
 		private TileSolver(int aId)
 		{

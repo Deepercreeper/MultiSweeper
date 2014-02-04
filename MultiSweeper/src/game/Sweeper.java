@@ -172,6 +172,8 @@ public abstract class Sweeper
 				return new TriSweeper(aViewer);
 			case 4 :
 				return new NovemSweeper(aViewer);
+			case 5 :
+				return new RandomSweeper(aViewer);
 			default :
 				return null;
 		}
