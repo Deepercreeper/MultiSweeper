@@ -1,11 +1,8 @@
 package data;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
 import log.Log;
@@ -41,16 +38,8 @@ public class DataManager
 		return null;
 	}
 	
-	private static InputStream load(String aName)
+	private static URL load(String aName)
 	{
-		try
-		{
-			return new FileInputStream(new File("data/" + aName + ".png"));
-		}
-		catch (FileNotFoundException e)
-		{
-			Log.exception("Could not find Image " + aName);
-		}
-		return null;
+		return DataManager.class.getClass().getResource("/" + aName + ".png");
 	}
 }
